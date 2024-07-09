@@ -3,18 +3,7 @@ import streamlit as stl
 from flask import Flask
 import sqlite3
 from PIL import Image
-
-
-img = Image.open("/Users/arhan.sheth/Documents/Codes/DX/Flask/emp_details/dxFactor_logo.jpeg")
-
-# streamlit header elements
-stl.image(img, width = 100)
-stl.title("Employee Database")
-
-# Prompting user to input employee name
-name = stl.text_input("Enter Employee Name", "Type Here...")
-if (stl.button("Submit")):
-    stl.success("Generating Link...")
+import time
 
 # Creating Database
 emp_connection = sqlite3.connect("EmployeeData.db")
@@ -38,19 +27,33 @@ emp_connection.execute('''INSERT INTO employee_data VALUES(
                        'Rahul', 'data analyst', 'ahmedabadapp')''')
 emp_connection.execute('''INSERT INTO employee_data VALUES(
                        'Pankti', 'data scientist', 'ahmedabadapp')''')
+print("Data Insertion Failed !")
 
-
-# Initialisting Flask
+# Initializing Flask
 app = Flask(__name__)
 @app.route("/getData/<name>")
-def getData(result):
-    checker = emp_cursor.execute("SELECT EXISTS(SELECT 1 FROM employee_data WHERE NAME = ?)", (result,))
-    if (checker == True):
-        final_data = emp_cursor.execute("SELECT * FROM employee_data WHERE NAME = ?", (result,))
+def getData(name):
+        final_data = emp_cursor.execute("SELECT * FROM employee_data WHERE NAME = ?", (name,))
         return final_data
-    else:
-        return "No Data Found"
 
+img = Image.open("/Users/arhan.sheth/Documents/Codes/DX/Flask/emp_details/dxFactor_logo.jpeg")
+
+# streamlit header elements
+stl.image(img, width = 100)
+stl.title("Employee Database")
+
+# Prompting user to input employee name
+name = stl.text_input("Enter Employee Name", "Type Here...")
+if (stl.button("Submit")):
+    stl.warning("Generating URL... DO NOT CLOSE")
+    time.sleep(5)
+    checker = emp_cursor.execute("SELECT EXISTS(SELECT 1 FROM employee_data WHERE NAME = ?)", (name,))
+    if name != 'Type Here...':
+        stl.success("Link Generated!")
+        flask_url = f'http://127.0.0.1:5000/getData/{name}'
+        time.sleep(2)
+        stl.info(f'Generated URL: {flask_url}')
+        app.run(port = 5000)
 
 emp_connection.commit()
 emp_cursor.close()
