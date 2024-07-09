@@ -27,7 +27,7 @@ emp_connection.execute('''INSERT INTO employee_data VALUES(
                        'Rahul', 'data analyst', 'ahmedabadapp')''')
 emp_connection.execute('''INSERT INTO employee_data VALUES(
                        'Pankti', 'data scientist', 'ahmedabadapp')''')
-print("Data Insertion Failed !")
+print("Data Insertion Successul!")
 
 # Initializing Flask
 app = Flask(__name__)
@@ -55,7 +55,6 @@ if (stl.button("Submit")):
         stl.info(f'Generated URL: {flask_url}')
         app.run(port = 5000)
 
-emp_connection.commit()
 emp_cursor.close()
 emp_connection.close()
 
