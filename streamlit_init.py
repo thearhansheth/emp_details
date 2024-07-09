@@ -1,12 +1,12 @@
 # importing all required libraries/frameworks
 import streamlit as stl
-from flask import Flask
+from flask import Flask, jsonify
 import sqlite3
 from PIL import Image
 import time
 
 # Creating Database
-emp_connection = sqlite3.connect("EmployeeData.db")
+emp_connection = sqlite3.connect("EmployeeData.db", check_same_thread = False)
 
 # initialise cursor
 emp_cursor = emp_connection.cursor()
@@ -33,7 +33,8 @@ print("Data Insertion Successul!")
 app = Flask(__name__)
 @app.route("/getData/<name>")
 def getData(name):
-        final_data = emp_cursor.execute("SELECT * FROM employee_data WHERE NAME = ?", (name,))
+        emp_cursor.execute("SELECT * FROM employee_data WHERE NAME = ?", (name,))
+        final_data = emp_cursor.fetchall()
         return final_data
 
 img = Image.open("/Users/arhan.sheth/Documents/Codes/DX/Flask/emp_details/dxFactor_logo.jpeg")
